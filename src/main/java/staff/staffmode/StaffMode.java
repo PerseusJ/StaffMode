@@ -3,6 +3,8 @@ package staff.staffmode;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.GameMode;
+import org.bukkit.Bukkit;
+
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,11 +16,14 @@ public final class StaffMode extends JavaPlugin {
     private final HashSet<UUID> frozenPlayers = new HashSet<>();
     private final HashMap<UUID, GameMode> originalGameModes = new HashMap<>();
     private final HashMap<UUID, ItemStack[]> savedInventories = new HashMap<>();
+    private final HashSet<UUID> buildModePlayers = new HashSet<>();
+
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         this.getCommand("staff").setExecutor(new StaffCommandExecutor(this, staffModePlayers, savedInventories));
+        this.getCommand("build").setExecutor(new staff.buildmode.BuildCommandExecutor(this));
         getServer().getPluginManager().registerEvents(new VanishListener(this), this);
         getServer().getPluginManager().registerEvents(new OpenEnderChestListener(this), this);
         getServer().getPluginManager().registerEvents(new OpenInventoryListener(this), this);
@@ -27,6 +32,7 @@ public final class StaffMode extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TeleportCompassListener(this), this);
         getServer().getPluginManager().registerEvents(new TeleportMenuInteractionListener(this), this);
         getServer().getPluginManager().registerEvents(new SpectatorModeListener(this), this);
+        getServer().getPluginManager().registerEvents(new staff.buildmode.InventoryAccessListener(this), this);
 
     }
 
@@ -38,17 +44,17 @@ public final class StaffMode extends JavaPlugin {
     public HashMap<UUID, GameMode> getOriginalGameModes() {
         return originalGameModes;
     }
-
     public HashSet<UUID> getStaffModePlayers() {
         return staffModePlayers;
     }
-
     public HashSet<UUID> getFrozenPlayers() {
         return frozenPlayers;
     }
-
     public HashMap<UUID, ItemStack[]> getSavedInventories() {
         return savedInventories;
+    }
+    public HashSet<UUID> getBuildModePlayers() {
+        return buildModePlayers;
     }
 }
 

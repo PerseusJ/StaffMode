@@ -8,3 +8,8 @@ commands:
     description: Toggle Staff Mode.
     usage: /<command>
     permission: utilities.staff
+
+  build:
+    description: Toggle Build Mode.
+    usage: /<command>
+    permission: utilities.build
