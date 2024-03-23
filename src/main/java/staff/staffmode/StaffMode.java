@@ -20,6 +20,7 @@ public final class StaffMode extends JavaPlugin {
 
 
 
+
     @Override
     public void onEnable() {
         super.onEnable();
@@ -35,6 +36,7 @@ public final class StaffMode extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TeleportMenuInteractionListener(this), this);
         getServer().getPluginManager().registerEvents(new SpectatorModeListener(this), this);
         getServer().getPluginManager().registerEvents(new staff.buildmode.BuildModeChestAccessListener(this), this);
+        getServer().getPluginManager().registerEvents(new staff.buildmode.BuildModeItemDropListener(this), this);
 
     }
 
@@ -46,15 +48,19 @@ public final class StaffMode extends JavaPlugin {
     public HashMap<UUID, GameMode> getOriginalGameModes() {
         return originalGameModes;
     }
+
     public HashSet<UUID> getStaffModePlayers() {
         return staffModePlayers;
     }
+
     public HashSet<UUID> getFrozenPlayers() {
         return frozenPlayers;
     }
+
     public HashMap<UUID, ItemStack[]> getSavedInventories() {
         return savedInventories;
     }
+
     public HashSet<UUID> getBuildModePlayers() {
         return buildModePlayers;
     }

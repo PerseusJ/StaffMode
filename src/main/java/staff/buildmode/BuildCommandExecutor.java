@@ -1,6 +1,7 @@
 package staff.buildmode;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import staff.staffmode.StaffMode; // Import your main plugin class
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -34,12 +36,19 @@ public class BuildCommandExecutor implements CommandExecutor {
 
         UUID playerUUID = player.getUniqueId();
         HashSet<UUID> buildModePlayers = plugin.getBuildModePlayers();
+        HashMap<UUID, GameMode> originalGameModes = plugin.getOriginalGameModes(); // Assuming this getter is implemented in StaffMode
+
         if (buildModePlayers.contains(playerUUID)) {
             // Toggle off: Player was in Build Mode, move them back to Player Mode
             buildModePlayers.remove(playerUUID);
             player.sendMessage(ChatColor.GREEN + "Build Mode deactivated.");
 
-            // Restore the player's original inventory (implementation depends on your inventory management)
+            // Restore the player's original game mode
+            GameMode originalGameMode = originalGameModes.getOrDefault(playerUUID, GameMode.SURVIVAL);
+            player.setGameMode(originalGameMode);
+            originalGameModes.remove(playerUUID);
+
+            // Restore the player's original inventory
             ItemStack[] inventoryContents = plugin.getSavedBuildModeInventories().remove(playerUUID);
             if (inventoryContents != null) {
                 player.getInventory().setContents(inventoryContents);
@@ -48,6 +57,10 @@ public class BuildCommandExecutor implements CommandExecutor {
             // Toggle on: Player was in Player Mode, move them to Build Mode
             buildModePlayers.add(playerUUID);
             player.sendMessage(ChatColor.GREEN + "Build Mode activated.");
+
+            // Save the current game mode before changing
+            originalGameModes.put(playerUUID, player.getGameMode());
+            player.setGameMode(GameMode.CREATIVE);
 
             // Save the player's current inventory and clear it
             ItemStack[] inventoryContents = player.getInventory().getContents();
