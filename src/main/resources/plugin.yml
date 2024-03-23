@@ -2,3 +2,9 @@ name: StaffMode
 version: '${project.version}'
 main: staff.staffmode.StaffMode
 api-version: '1.20'
+
+commands:
+  staff:
+    description: Toggle Staff Mode.
+    usage: /<command>
+    permission: utilities.staff
