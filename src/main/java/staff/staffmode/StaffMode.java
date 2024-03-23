@@ -3,8 +3,7 @@ package staff.staffmode;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.GameMode;
-import org.bukkit.Bukkit;
-
+import staff.buildmode.BuildCommandExecutor;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,13 +16,16 @@ public final class StaffMode extends JavaPlugin {
     private final HashMap<UUID, GameMode> originalGameModes = new HashMap<>();
     private final HashMap<UUID, ItemStack[]> savedInventories = new HashMap<>();
     private final HashSet<UUID> buildModePlayers = new HashSet<>();
+    private final HashMap<UUID, ItemStack[]> savedBuildModeInventories = new HashMap<>();
+
 
 
     @Override
     public void onEnable() {
+        super.onEnable();
         // Plugin startup logic
         this.getCommand("staff").setExecutor(new StaffCommandExecutor(this, staffModePlayers, savedInventories));
-        this.getCommand("build").setExecutor(new staff.buildmode.BuildCommandExecutor(this));
+        this.getCommand("build").setExecutor(new BuildCommandExecutor(this));
         getServer().getPluginManager().registerEvents(new VanishListener(this), this);
         getServer().getPluginManager().registerEvents(new OpenEnderChestListener(this), this);
         getServer().getPluginManager().registerEvents(new OpenInventoryListener(this), this);
@@ -32,7 +34,7 @@ public final class StaffMode extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TeleportCompassListener(this), this);
         getServer().getPluginManager().registerEvents(new TeleportMenuInteractionListener(this), this);
         getServer().getPluginManager().registerEvents(new SpectatorModeListener(this), this);
-        getServer().getPluginManager().registerEvents(new staff.buildmode.InventoryAccessListener(this), this);
+        getServer().getPluginManager().registerEvents(new staff.buildmode.BuildModeChestAccessListener(this), this);
 
     }
 
@@ -55,6 +57,10 @@ public final class StaffMode extends JavaPlugin {
     }
     public HashSet<UUID> getBuildModePlayers() {
         return buildModePlayers;
+    }
+
+    public HashMap<UUID, ItemStack[]> getSavedBuildModeInventories() {
+        return savedBuildModeInventories;
     }
 }
 

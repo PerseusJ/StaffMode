@@ -1,22 +1,19 @@
 package staff.buildmode;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.ChatColor;
-import staff.staffmode.StaffMode; // Import the main class
+import staff.staffmode.StaffMode; // Import your main plugin class
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
 public class BuildCommandExecutor implements CommandExecutor {
 
     private final StaffMode plugin;
-    private final HashSet<UUID> buildModePlayers = new HashSet<>();
-    private final HashMap<UUID, ItemStack[]> savedInventories = new HashMap<>();
 
     public BuildCommandExecutor(StaffMode plugin) {
         this.plugin = plugin;
@@ -36,13 +33,14 @@ public class BuildCommandExecutor implements CommandExecutor {
         }
 
         UUID playerUUID = player.getUniqueId();
+        HashSet<UUID> buildModePlayers = plugin.getBuildModePlayers();
         if (buildModePlayers.contains(playerUUID)) {
             // Toggle off: Player was in Build Mode, move them back to Player Mode
             buildModePlayers.remove(playerUUID);
             player.sendMessage(ChatColor.GREEN + "Build Mode deactivated.");
 
-            // Restore the player's original inventory
-            ItemStack[] inventoryContents = savedInventories.remove(playerUUID);
+            // Restore the player's original inventory (implementation depends on your inventory management)
+            ItemStack[] inventoryContents = plugin.getSavedBuildModeInventories().remove(playerUUID);
             if (inventoryContents != null) {
                 player.getInventory().setContents(inventoryContents);
             }
@@ -53,7 +51,7 @@ public class BuildCommandExecutor implements CommandExecutor {
 
             // Save the player's current inventory and clear it
             ItemStack[] inventoryContents = player.getInventory().getContents();
-            savedInventories.put(playerUUID, inventoryContents);
+            plugin.getSavedBuildModeInventories().put(playerUUID, inventoryContents);
             player.getInventory().clear();
 
             // Set up the build mode inventory here, if needed
