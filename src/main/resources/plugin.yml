@@ -1,0 +1,4 @@
+name: StaffMode
+version: '${project.version}'
+main: staff.staffmode.StaffMode
+api-version: '1.20'
